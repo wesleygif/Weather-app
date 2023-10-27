@@ -1,10 +1,10 @@
 import React from 'react';
 import { Image } from 'react-native';
 
-const WeatherIcon = ({ iconCode }) => (
+const WeatherIcon = ({ iconCode, width, height }) => (
   <Image
     source={{ uri: `https://openweathermap.org/img/w/${iconCode}.png` }}
-    style={{ width: 50, height: 50 }}
+    style={{ width: width, height: height }}
   />
 );
 

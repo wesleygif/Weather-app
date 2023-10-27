@@ -20,12 +20,13 @@ const getDayOfWeek = (timestamp) => {
 const WeatherForecast = ({ forecastData }) => (
   <FlatList
     horizontal={true}
-    data={forecastData.slice(0, 4)}
+    data={forecastData.slice(0, 6)}
     keyExtractor={(item) => item.dt.toString()}
     renderItem={({ item }) => (
       <View key={item.dt} style={styles.item}>
         <Text style={styles.textCenter}>{getDayOfWeek(item.dt)}</Text>
-        <WeatherIcon iconCode={item.weather[0].icon} />
+        <WeatherIcon iconCode={item.weather[0].icon} width={50} height={50} />
+
         <Text style={styles.textCenter}>Tempo: <WeatherDescription description={item.weather[0].description} /></Text>
 
         <Text style={styles.textCenter}>Temp. Mín. : {Math.round(item.temp.min - 273.15)}°C</Text>
@@ -45,15 +46,15 @@ const styles = {
   },
   item: {
     alignItems: 'center',
-    borderRadius: 8, // Adicione o border-radius
+    borderRadius: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.23)',
-    width: 120, // Largura desejada para o View dentro de cada item
-    height: 180, // Altura desejada para o View dentro de cada item
-    margin: 10, // Espaçamento entre os itens
+    width: 120,
+    height: 180,
+    margin: 10,
   },
   textCenter: {
     marginTop: 10,
-    textAlign: 'center', // Center-align text
+    textAlign: 'center',
   },
 };
 
