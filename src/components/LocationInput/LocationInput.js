@@ -19,7 +19,7 @@ const LocationInput = () => {
   const [searchCompleted, setSearchCompleted] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedWeatherData, setSelectedWeatherData] = useState(null);
-  
+  const [error, setError] = useState(null);
 
   const handleSearch = async () => {
     setIsLoading(true);
@@ -36,7 +36,7 @@ const LocationInput = () => {
       Keyboard.dismiss();
     } catch (error) {
       setIsLoading(false);
-      console.error('Erro ao buscar coordenadas:', error);
+      setError('Erro ao buscar coordenadas: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +58,7 @@ const LocationInput = () => {
         setSelectedWeatherData(weatherData);
         setIsFavorite(!isAlreadyFavorite);
       } catch (error) {
-        console.error('Erro ao adicionar aos favoritos:', error);
+        setError('Erro ao adicionar aos favoritos: ' + error.message);
       }
     }
   };
@@ -76,6 +76,7 @@ const LocationInput = () => {
 
   return (
     <View style={styles.container}>
+      {error && <Text style={styles.errorText}>{error}</Text>}
       {isLoading && <ActivityIndicator size="large" color="#0000ff" />}
       <TextInput
         placeholder="Pesquise a sua localização"

@@ -9,6 +9,7 @@ import { GetWeatherDataByCoordinates } from '../../services/OpenWeatherMapServic
 const Home = () => {
   const [currentWeatherData, setCurrentWeatherData] = useState();
   const [forecastWeatherData, setForecastWeatherData] = useState();
+  const [error, setError] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -26,11 +27,9 @@ const Home = () => {
       setCurrentWeatherData(weatherData);
       setForecastWeatherData(weatherData.daily);
     } catch (error) {
-      console.error('Erro ao obter dados meteorológicos:', error);
+      setError(error.message);
     }
   };
-
-  currentWeatherData
 
   return (
     <GradientBackground style={styles.container}>
@@ -42,6 +41,7 @@ const Home = () => {
         >
           <SafeAreaView style={styles.safeArea}>
         <Text style={styles.title}>Meu Local</Text>
+        {error && <Text>{error}</Text>}
         <Text style={styles.subTitle}>{currentWeatherData?.timezone.split('/').pop().replace('_', ' ')}</Text>
         <LocationPermissionScreen onLocationUpdate={updateWeatherData} />
           {currentWeatherData ? (

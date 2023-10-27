@@ -5,6 +5,7 @@ import WeatherDescription from '../../utils/WeatherDescription';
 
 const FavoritesScreen = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
+  const [error, setError] = useState(null);
 
   const fetchFavoriteItems = async () => {
     try {
@@ -18,7 +19,7 @@ const FavoritesScreen = () => {
         }
       }
     } catch (error) {
-      console.error('Erro ao recuperar favoritos:', error);
+      setError('Erro ao recuperar favoritos: ', + error.message);
     }
   };
 
@@ -38,7 +39,7 @@ const FavoritesScreen = () => {
       await AsyncStorage.setItem('favoriteWeatherData', JSON.stringify(updatedItems));
       setFavoriteItems(updatedItems);
     } catch (error) {
-      console.error('Erro ao remover o item:', error);
+      setError('Erro ao remover o item: ' + error.message);
     }
   };
 

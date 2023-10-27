@@ -10,11 +10,9 @@ const LocationPermissionScreen = ({ onLocationUpdate }) => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
     if (status === 'granted') {
-      console.log('Permissão concedida');
       setPermissionStatus('granted');
       updateLocation();
     } else {
-      console.log('Permissão não concedida');
       setPermissionStatus('denied');
     }
   };
@@ -25,8 +23,6 @@ const LocationPermissionScreen = ({ onLocationUpdate }) => {
     if (status === 'granted') {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      console.log('Latitude:', latitude);
-      console.log('Longitude:', longitude);
       setLocationData(location);
       onLocationUpdate(latitude, longitude);
     }
