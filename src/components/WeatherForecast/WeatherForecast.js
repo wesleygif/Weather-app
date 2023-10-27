@@ -20,6 +20,7 @@ const getDayOfWeek = (timestamp) => {
 const WeatherForecast = ({ forecastData }) => (
   <View style={styles.Container}>
     <FlatList
+        showsHorizontalScrollIndicator={false} // Adicione esta linha
         horizontal={true}
         data={forecastData.slice(0, 6)}
         keyExtractor={(item) => item.dt.toString()}
