@@ -6,25 +6,31 @@ import WeatherDescription from '../../utils/WeatherDescription';
 const FavoritesScreen = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
 
-  useEffect(() => {
-    const getFavoriteItems = async () => {
-      try {
-        const savedItems = await AsyncStorage.getItem('favoriteWeatherData');
-        if (savedItems !== null) {
-          const parsedItems = JSON.parse(savedItems);
-          if (Array.isArray(parsedItems)) {
-            setFavoriteItems(parsedItems);
-          } else {
-            console.warn('Dados recuperados do AsyncStorage não são um array válido.');
-          }
+  const fetchFavoriteItems = async () => {
+    try {
+      const savedItems = await AsyncStorage.getItem('favoriteWeatherData');
+      if (savedItems !== null) {
+        const parsedItems = JSON.parse(savedItems);
+        if (Array.isArray(parsedItems)) {
+          setFavoriteItems(parsedItems);
+        } else {
+          console.warn('Dados recuperados do AsyncStorage não são um array válido.');
         }
-      } catch (error) {
-        console.error('Erro ao recuperar favoritos:', error);
       }
-    };
+    } catch (error) {
+      console.error('Erro ao recuperar favoritos:', error);
+    }
+  };
 
-    getFavoriteItems();
+  useEffect(() => {
+    fetchFavoriteItems();
+    const interval = setInterval(fetchFavoriteItems, 30000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  
 
   const removeItem = async (item) => {
     try {

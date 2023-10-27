@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Button, Text, ActivityIndicator  } from 'react-native';
 import { getLocationCoordinates } from '../../services/LocationService';
 import { GetWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
 import WeatherDescription from '../../utils/WeatherDescription';
@@ -10,8 +10,11 @@ const LocationInput = () => {
   const [coordinates, setCoordinates] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSearch = async () => {
+ const handleSearch = async () => {
+    setIsLoading(true); // Marque que a pesquisa está em andamento
+
     try {
       const locationData = await getLocationCoordinates(location);
       setCoordinates(locationData);
@@ -19,27 +22,35 @@ const LocationInput = () => {
       const weatherData = await GetWeatherDataByCoordinates(locationData.lat, locationData.lng);
       setWeatherData(weatherData);
     } catch (error) {
+      setIsLoading(false);
       console.error('Erro ao buscar coordenadas:', error);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const renderLoadingIndicator = () => {
+    if (isLoading) {
+      return <ActivityIndicator size="large" color="#0000ff" />;
+    }
+    return null;
   };
 
   const handleFavorite = async () => {
     if (weatherData) {
       try {
-        // Busque os dados existentes no AsyncStorage, se houver algum
         const favoriteWeatherDataJSON = await AsyncStorage.getItem('favoriteWeatherData');
         let favoriteWeatherDataArray = favoriteWeatherDataJSON ? JSON.parse(favoriteWeatherDataJSON) : [];
-  
-        // Verifique se o item já está nos favoritos
+
         const isAlreadyFavorite = favoriteWeatherDataArray.some(item => item.timezone === weatherData.timezone);
-  
-        // Se não estiver nos favoritos, adicione-o ao array
+
         if (!isAlreadyFavorite) {
           favoriteWeatherDataArray.push(weatherData);
-  
-          // Salve o array atualizado de volta no AsyncStorage
           await AsyncStorage.setItem('favoriteWeatherData', JSON.stringify(favoriteWeatherDataArray));
         }
+
+        // Toggle the isFavorite state when the button is clicked
+        setIsFavorite(!isAlreadyFavorite);
       } catch (error) {
         console.error('Erro ao adicionar aos favoritos:', error);
       }
@@ -49,6 +60,7 @@ const LocationInput = () => {
 
   return (
     <View>
+      {renderLoadingIndicator()}
       <TextInput
         placeholder="Insira o nome da localização"
         value={location}
