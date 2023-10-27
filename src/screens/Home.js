@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { View, Text, StyleSheet, SafeAreaView,Button } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, Button, ScrollView, RefreshControl } from 'react-native';
 import WeatherInfo from '../components/WeatherInfo/WeatherInfo';
 import WeatherForecast from '../components/WeatherForecast/WeatherForecast';
 import ApiData from '../../teste';
@@ -7,10 +7,20 @@ import LocationInput from '../components/LocationInput/LocationInput';
 import GradientBackground from '../components/GradientBackground/GradientBackground';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LocationPermissionScreen from '../components/LocationPermission/LocationPermissionScreen';
+
 const Home = () => {
   const currentWeatherData = ApiData;
   const forecastWeatherData = ApiData.daily;
   const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  }, []);
 
   const goToLocationSearch = () => {
     navigation.navigate('LocationSearch');
@@ -39,14 +49,20 @@ const Home = () => {
         <Text style={styles.title}>Meu Local</Text>
         <Text style={styles.subTitle}>{currentWeatherData.timezone}</Text>
 
-        <WeatherInfo currentData={currentWeatherData} />
+        <LocationPermissionScreen />
 
-        <View style={styles.container2}>
-          <Text>Previsão do Tempo</Text>
-          <WeatherForecast forecastData={forecastWeatherData} />
-        </View>
-        <LocationInput />
-
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <WeatherInfo currentData={currentWeatherData} />
+          <View style={styles.container2}>
+            <Text>Previsão do Tempo</Text>
+            <WeatherForecast forecastData={forecastWeatherData} />
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </GradientBackground>
   );
@@ -54,7 +70,7 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    flex: 1,
   },
   safeArea: {
     flex: 1,
@@ -66,7 +82,7 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 30,
-  }
+  },
 });
 
 export default Home;
