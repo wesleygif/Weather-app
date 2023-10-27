@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import { getLocationCoordinates } from '../../services/LocationService';
 import { getWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
+import WeatherDescription from '../../utils/WeatherDescription';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Correção aqui
 
 const LocationInput = () => {
   const [location, setLocation] = useState('');
   const [coordinates, setCoordinates] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleSearch = async () => {
     try {
@@ -19,7 +22,31 @@ const LocationInput = () => {
       console.error('Erro ao buscar coordenadas:', error);
     }
   };
-  console.log("=====",weatherData,"=====")
+
+  const handleFavorite = async () => {
+    if (weatherData) {
+      try {
+        // Busque os dados existentes no AsyncStorage, se houver algum
+        const favoriteWeatherDataJSON = await AsyncStorage.getItem('favoriteWeatherData');
+        let favoriteWeatherDataArray = favoriteWeatherDataJSON ? JSON.parse(favoriteWeatherDataJSON) : [];
+  
+        // Verifique se o item já está nos favoritos
+        const isAlreadyFavorite = favoriteWeatherDataArray.some(item => item.timezone === weatherData.timezone);
+  
+        // Se não estiver nos favoritos, adicione-o ao array
+        if (!isAlreadyFavorite) {
+          favoriteWeatherDataArray.push(weatherData);
+  
+          // Salve o array atualizado de volta no AsyncStorage
+          await AsyncStorage.setItem('favoriteWeatherData', JSON.stringify(favoriteWeatherDataArray));
+        }
+      } catch (error) {
+        console.error('Erro ao adicionar aos favoritos:', error);
+      }
+    }
+  };
+  
+
   return (
     <View>
       <TextInput
@@ -30,18 +57,12 @@ const LocationInput = () => {
       />
       <Button title="Pesquisar" onPress={handleSearch} />
 
-      {coordinates && (
-        <View>
-          {/* <Text>Nome da Localização: {weatherData.timezone}</Text> */}
-          <Text>Latitude: {coordinates.lat}</Text>
-          <Text>Longitude: {coordinates.lng}</Text>
-        </View>
-      )}
-
       {weatherData && (
         <View>
-          <Text>Temperatura Atual: {weatherData.current.temp} °C</Text>
-          <Text>Condição: {weatherData.current.weather[0].description}</Text>
+          <Text>{weatherData.timezone}</Text>
+          <Text>Temperatura Atual: {Math.round(weatherData.current.temp - 273.15)} °C</Text>
+          <Text><WeatherDescription description={weatherData.current.weather[0].description} /></Text>
+          <Button title={isFavorite ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'} onPress={handleFavorite} />
         </View>
       )}
     </View>
