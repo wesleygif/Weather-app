@@ -21,7 +21,7 @@ const Home = () => {
       try {
         const favoriteWeatherData = await AsyncStorage.getItem('favoriteWeatherData');
         if (favoriteWeatherData) {
-          console.log('Dados favoritos:', JSON.parse(favoriteWeatherData));
+          // console.log('Dados favoritos:', JSON.parse(favoriteWeatherData));
         }
       } catch (error) {
         console.error('Erro ao recuperar dados favoritos:', error);

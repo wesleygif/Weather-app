@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WeatherDescription from '../../utils/WeatherDescription';
+
 const FavoritesScreen = () => {
   const [favoriteItems, setFavoriteItems] = useState([]);
 
@@ -25,6 +26,16 @@ const FavoritesScreen = () => {
     getFavoriteItems();
   }, []);
 
+  const removeItem = async (item) => {
+    try {
+      const updatedItems = favoriteItems.filter((favItem) => favItem.timezone !== item.timezone);
+      await AsyncStorage.setItem('favoriteWeatherData', JSON.stringify(updatedItems));
+      setFavoriteItems(updatedItems);
+    } catch (error) {
+      console.error('Erro ao remover o item:', error);
+    }
+  };
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -47,7 +58,13 @@ const FavoritesScreen = () => {
                 <Text style={styles.itemText}>Temp. Mín. : {Math.round(item.daily[0].temp.min - 273.15)}°C</Text>
 
                 <Text style={styles.itemText}>Temp. Máx.: {Math.round(item.daily[0].temp.max - 273.15)}°C</Text>
-                
+
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => removeItem(item)}
+                >
+                  <Text style={styles.removeButtonText}>Remover</Text>
+                </TouchableOpacity>
               </View>
             );
           }}
@@ -75,6 +92,16 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     textAlign: 'center',
+  },
+  removeButton: {
+    backgroundColor: 'red',
+    padding: 8,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  removeButtonText: {
+    color: 'white',
   },
 });
 

@@ -3,7 +3,7 @@ import { View, TextInput, Button, Text } from 'react-native';
 import { getLocationCoordinates } from '../../services/LocationService';
 import { getWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
 import WeatherDescription from '../../utils/WeatherDescription';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Correção aqui
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LocationInput = () => {
   const [location, setLocation] = useState('');
