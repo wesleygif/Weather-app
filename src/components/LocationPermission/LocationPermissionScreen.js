@@ -11,23 +11,34 @@ const LocationPermissionScreen = ({ onLocationUpdate }) => {
 
     if (status === 'granted') {
       console.log('Permissão concedida');
+      setPermissionStatus('granted');
+      updateLocation();
     } else {
       console.log('Permissão não concedida');
+      setPermissionStatus('denied');
     }
   };
 
   const updateLocation = async () => {
-    const location = await Location.getCurrentPositionAsync({});
-    const { latitude, longitude } = location.coords;
-    console.log('Latitude:', latitude);
-    console.log('Longitude:', longitude);
-    setLocationData(location);
-    onLocationUpdate(latitude, longitude); // Chama a função de retorno de chamada
+    const { status } = await Location.getForegroundPermissionsAsync();
+
+    if (status === 'granted') {
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+      console.log('Latitude:', latitude);
+      console.log('Longitude:', longitude);
+      setLocationData(location);
+      onLocationUpdate(latitude, longitude);
+    }
+  };
+
+  const handleRetryPermission = () => {
+    setPermissionStatus(null);
+    requestLocationPermission();
   };
 
   useEffect(() => {
     requestLocationPermission();
-    updateLocation();
     const intervalId = setInterval(updateLocation, 300000);
 
     return () => {
@@ -37,7 +48,12 @@ const LocationPermissionScreen = ({ onLocationUpdate }) => {
 
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-      {permissionStatus && <Text>Status da Permissão: {permissionStatus}</Text>}
+      {permissionStatus === 'denied' && (
+        <View>
+          <Text>Permissão de localização negada. Para ativar, clique no botão abaixo:</Text>
+          <Button title="Usar minha localização" onPress={handleRetryPermission} />
+        </View>
+      )}
     </View>
   );
 };
