@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Button, ScrollView, RefreshControl } from 'react-native';
-import WeatherInfo from '../components/WeatherInfo/WeatherInfo';
-import WeatherForecast from '../components/WeatherForecast/WeatherForecast';
-import GradientBackground from '../components/GradientBackground/GradientBackground';
-import LocationPermissionScreen from '../components/LocationPermission/LocationPermissionScreen';
-import { GetWeatherDataByCoordinates } from '../services/OpenWeatherMapService';
+import WeatherInfo from '../../components/WeatherInfo/WeatherInfo';
+import WeatherForecast from '../../components/WeatherForecast/WeatherForecast';
+import GradientBackground from '../../components/GradientBackground/GradientBackground';
+import LocationPermissionScreen from '../../components/LocationPermission/LocationPermissionScreen';
+import { GetWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
 
 const Home = () => {
   const [currentWeatherData, setCurrentWeatherData] = useState();

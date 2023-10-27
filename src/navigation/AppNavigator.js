@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../screens/Home';
+import Home from '../screens/Home/Home';
 import LocationSearchScreen from '../screens/LocationSearchScreen/LocationSearchScreen';
 import FavoritesScreen from '../screens/FavoritesScreen/FavoritesScreen';
 

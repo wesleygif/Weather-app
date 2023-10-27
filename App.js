@@ -1,7 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator'; // Importe o seu novo componente de navegação
+import AppNavigator from './src/navigation/AppNavigator';
 
 export default function App() {
   return (
