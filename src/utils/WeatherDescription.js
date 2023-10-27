@@ -6,7 +6,7 @@ const WeatherDescription = ({ description }) => {
     'clear sky': 'Céu limpo, sem nuvens',
     'few clouds': 'Poucas nuvens no céu',
     'scattered clouds': 'Nuvens dispersas, algumas nuvens no céu',
-    'broken clouds': 'Nuvens quebradas, muitas nuvens, mas ainda visível',
+    'broken clouds': 'Muitas nuvens quebradas, mas ainda visível',
     'overcast clouds': 'Céu nublado, totalmente coberto de nuvens',
     'mist': 'Neblina leve',
     'fog': 'Nevoeiro, visibilidade reduzida',
@@ -18,7 +18,7 @@ const WeatherDescription = ({ description }) => {
     'heavy snow': 'Neve pesada',
     'hail': 'Granizo',
     'thunderstorm': 'Tempestade com trovões e relâmpagos',
-    'tornado': 'Tornado (raro e muito destrutivo)',
+    'tornado': 'Tornado',
   };
 
   const translatedDescription = traducoes[description] || description;

@@ -47,12 +47,12 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="LocationSearch"
+        name="Buscar endereço"
         component={LocationSearchStack}
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="Favorites"
+        name="Favoritos"
         component={FavoritesStack}
         options={{ headerShown: false }}
       />

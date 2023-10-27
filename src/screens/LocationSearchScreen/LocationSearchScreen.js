@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import LocationInput from '../../components/LocationInput/LocationInput';
 
 const LocationSearchScreen = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {/* <Text style={{ fontSize: 20, marginTop: 200 }}>Pesquisa de Localização</Text> */}
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "black" }}>
       <LocationInput />
     </View>
   );

@@ -43,10 +43,11 @@ const FavoritesScreen = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.title}>Itens Favoritados</Text>
         <FlatList
+        showsVerticalScrollIndicator={false}
           data={favoriteItems}
           keyExtractor={(item) => item.timezone}
           ListEmptyComponent={() => (
@@ -55,7 +56,7 @@ const FavoritesScreen = () => {
           renderItem={({ item }) => {
             return (
               <View style={styles.itemContainer}>
-                <Text style={styles.itemText}> {item.timezone}</Text>
+                <Text style={styles.itemText}> {item.timezone.split('/').pop().replace('_', ' ')}</Text>
 
                 <Text style={styles.itemText}>Temperatura Atual: {Math.round(item.current.temp - 273.15)} °C</Text>
 
@@ -90,7 +91,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   itemContainer: {
-    marginBottom: 16,
+    textAlign: "center",
+    marginBottom: 26,
+    padding: 10,
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   itemText: {
     fontSize: 18,
