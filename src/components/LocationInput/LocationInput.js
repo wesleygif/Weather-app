@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 import { getLocationCoordinates } from '../../services/LocationService';
-import { getWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
+import { GetWeatherDataByCoordinates } from '../../services/OpenWeatherMapService';
 import WeatherDescription from '../../utils/WeatherDescription';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +16,7 @@ const LocationInput = () => {
       const locationData = await getLocationCoordinates(location);
       setCoordinates(locationData);
 
-      const weatherData = await getWeatherDataByCoordinates(locationData.lat, locationData.lng);
+      const weatherData = await GetWeatherDataByCoordinates(locationData.lat, locationData.lng);
       setWeatherData(weatherData);
     } catch (error) {
       console.error('Erro ao buscar coordenadas:', error);

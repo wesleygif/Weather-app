@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Alert } from 'react-native';
 import * as Location from 'expo-location';
 
-const LocationPermissionScreen = () => {
+const LocationPermissionScreen = ({ onLocationUpdate }) => {
   const [permissionStatus, setPermissionStatus] = useState(null);
   const [locationData, setLocationData] = useState(null);
 
@@ -22,6 +22,7 @@ const LocationPermissionScreen = () => {
     console.log('Latitude:', latitude);
     console.log('Longitude:', longitude);
     setLocationData(location);
+    onLocationUpdate(latitude, longitude); // Chama a função de retorno de chamada
   };
 
   useEffect(() => {
@@ -37,12 +38,6 @@ const LocationPermissionScreen = () => {
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       {permissionStatus && <Text>Status da Permissão: {permissionStatus}</Text>}
-      {locationData && (
-        <View>
-          <Text>Latitude: {locationData.coords.latitude}</Text>
-          <Text>Longitude: {locationData.coords.longitude}</Text>
-        </View>
-      )}
     </View>
   );
 };

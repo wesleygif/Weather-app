@@ -2,16 +2,18 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Button, ScrollView, RefreshControl } from 'react-native';
 import WeatherInfo from '../components/WeatherInfo/WeatherInfo';
 import WeatherForecast from '../components/WeatherForecast/WeatherForecast';
-import ApiData from '../../teste';
+// import ApiData from '../../teste';
 import LocationInput from '../components/LocationInput/LocationInput';
 import GradientBackground from '../components/GradientBackground/GradientBackground';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LocationPermissionScreen from '../components/LocationPermission/LocationPermissionScreen';
+import { GetWeatherDataByCoordinates } from '../services/OpenWeatherMapService';
 
 const Home = () => {
-  const currentWeatherData = ApiData;
-  const forecastWeatherData = ApiData.daily;
+  const [currentWeatherData, setCurrentWeatherData] = useState();
+  const [forecastWeatherData, setForecastWeatherData] = useState();
+
   const navigation = useNavigation();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -26,44 +28,74 @@ const Home = () => {
     navigation.navigate('LocationSearch');
   };
 
-  useEffect(() => {
-    const retrieveFavoriteWeatherData = async () => {
-      try {
-        const favoriteWeatherData = await AsyncStorage.getItem('favoriteWeatherData');
-        if (favoriteWeatherData) {
-          // console.log('Dados favoritos:', JSON.parse(favoriteWeatherData));
-        }
-      } catch (error) {
-        console.error('Erro ao recuperar dados favoritos:', error);
-      }
-    };
+   // Função para atualizar os dados meteorológicos com base nas coordenadas
+   const updateWeatherData = async (latitude, longitude) => {
+    try {
+      const weatherData = await GetWeatherDataByCoordinates(latitude, longitude);
+  
+      setCurrentWeatherData(weatherData);
+      setForecastWeatherData(weatherData.daily);
 
-    retrieveFavoriteWeatherData();
-  }, []);
+      // await AsyncStorage.setItem('currentWeatherData', JSON.stringify(weatherData));
+    } catch (error) {
+      console.error('Erro ao obter dados meteorológicos:', error);
+    }
+  };
+
+  // Função para recuperar os dados do AsyncStorage
+  // const retrieveDataFromStorage = async () => {
+  //   try {
+  //     const currentData = await AsyncStorage.getItem('currentWeatherData');
+  //     const forecastData = await AsyncStorage.getItem('currentWeatherData');
+
+  //     if (currentData && forecastData) {
+  //       // Se os dados forem encontrados, analise-os e defina os estados
+  //       setCurrentWeatherData(JSON.parse(currentData));
+  //       setForecastWeatherData(JSON.parse(currentData));
+  //       console.log("=======================================================",JSON.parse(currentData.daily))
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao recuperar dados do AsyncStorage:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   // Chame a função de recuperação de dados ao montar o componente
+  //   retrieveDataFromStorage();
+  // }, []);
+  // useEffect(() => {
+  //   // Chame a função de recuperação de dados ao montar o componente
+  //  console.log("========================================================",currentWeatherData)
+  // }, [currentWeatherData]);
+
+  currentWeatherData
 
   return (
     <GradientBackground style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <Button title="Ir para Pesquisa de Localização" onPress={goToLocationSearch} />
-
-        <Text style={styles.title}>Meu Local</Text>
-        <Text style={styles.subTitle}>{currentWeatherData.timezone}</Text>
-
-        <LocationPermissionScreen />
-
-        <ScrollView
+      <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <WeatherInfo currentData={currentWeatherData} />
-          <View style={styles.container2}>
-            <Text>Previsão do Tempo</Text>
-            <WeatherForecast forecastData={forecastWeatherData} />
-          </View>
-        </ScrollView>
+          <SafeAreaView style={styles.safeArea}>
+        <Text style={styles.title}>Meu Local</Text>
+        <Text style={styles.subTitle}>{currentWeatherData?.timezone}</Text>
+        <LocationPermissionScreen onLocationUpdate={updateWeatherData} />
+          {currentWeatherData ? (
+              <WeatherInfo currentData={currentWeatherData} />
+            ) : (
+              <Text>Carregando...</Text>
+            )}
       </SafeAreaView>
+      {currentWeatherData && currentWeatherData.daily ? (
+        <View style={styles.forecastContainer}>
+          <WeatherForecast forecastData={currentWeatherData.daily} />
+        </View>
+      ) : (
+        <Text>Previsão do tempo não disponível.</Text>
+      )}
+      </ScrollView>
     </GradientBackground>
   );
 };
@@ -74,8 +106,15 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    marginTop: 100,
     alignItems: 'center',
+  },
+  forecastContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingBottom: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   title: {
     fontSize: 35,

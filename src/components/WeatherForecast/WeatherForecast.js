@@ -18,31 +18,32 @@ const getDayOfWeek = (timestamp) => {
 };
 
 const WeatherForecast = ({ forecastData }) => (
-  <FlatList
-    horizontal={true}
-    data={forecastData.slice(0, 6)}
-    keyExtractor={(item) => item.dt.toString()}
-    renderItem={({ item }) => (
-      <View key={item.dt} style={styles.item}>
-        <Text style={styles.textCenter}>{getDayOfWeek(item.dt)}</Text>
-        <WeatherIcon iconCode={item.weather[0].icon} width={50} height={50} />
+  <View style={styles.Container}>
+    <FlatList
+        horizontal={true}
+        data={forecastData.slice(0, 6)}
+        keyExtractor={(item) => item.dt.toString()}
+        renderItem={({ item }) => (
+          <View key={item.dt} style={styles.item}>
+            <Text style={styles.textCenter}>{getDayOfWeek(item.dt)}</Text>
+            <WeatherIcon iconCode={item.weather[0].icon} width={50} height={50} />
 
-        <Text style={styles.textCenter}>Tempo: <WeatherDescription description={item.weather[0].description} /></Text>
+            <Text style={styles.textCenter}>Tempo: <WeatherDescription description={item.weather[0].description} /></Text>
 
-        <Text style={styles.textCenter}>Temp. Mín. : {Math.round(item.temp.min - 273.15)}°C</Text>
-        <Text style={styles.textCenter}>Temp. Máx.: {Math.round(item.temp.max - 273.15)}°C</Text>
-      </View>
-    )}
-    style={styles.flatList}
-  />
+            <Text style={styles.textCenter}>Temp. Mín. : {Math.round(item.temp.min - 273.15)}°C</Text>
+            <Text style={styles.textCenter}>Temp. Máx.: {Math.round(item.temp.max - 273.15)}°C</Text>
+          </View>
+        )}
+        style={styles.flatList}
+      />
+  </View>
+  
 );
 
 const styles = {
-  flatList: {
-    //  width: 120,
-    // width: 100, // Largura desejada para o FlatList
-    // height: 150, // Altura desejada para o FlatList
-    // backgroundColor: 'red',
+  Container: {
+    justifyContent: 'flex-end',
+   marginTop: 10,
   },
   item: {
     alignItems: 'center',
